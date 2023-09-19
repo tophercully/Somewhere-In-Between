@@ -11,6 +11,10 @@ uniform sampler2D g;
 uniform sampler2D c;
 uniform vec2 u_resolution;
 uniform float seed;
+uniform float sinMod;
+uniform float cosMod;
+uniform float scrollX;
+uniform float scrollY;
 uniform vec3 bgc;
 uniform float marg;
 uniform float pxSize;
@@ -83,61 +87,93 @@ void main() {
   stDebug.y = 1.0 - stDebug.y;
 
   //form noise
-  st.xy += map(random(st.xy), 0.0, 1.0, -0.0005, 0.0005);
-
-  
+  // st.xy += map(random(st.xy), 0.0, 1.0, -0.0005, 0.0005);
+  // float zoomInc = 0.0025;
+  // st.x = map(st.x, 0.0, 1.0, -zoomInc, 1.0+zoomInc);
+  // st.y = map(st.y, 0.0, 1.0, -(zoomInc*0.8), 1.0+(zoomInc*0.8));
   if(lastPass == true) {
     //shrink stB so there is margin
-    stB.x = map(st.x, 0.0, 1.0, -marg, 1.0+marg);
-    stB.y = map(st.y, 0.0, 1.0, -(marg*0.8), 1.0+(marg*0.8));
+    stB.x = map(stB.x, 0.0, 1.0, -marg, 1.0+marg);
+    stB.y = map(stB.y, 0.0, 1.0, -(marg*0.8), 1.0+(marg*0.8));
   }
-  
+
+
+  //scroll
+  // st.x+=scrollX;
+  // st.y+=scrollY;
+
+
+  //pusha
+  vec4 sampC = texture2D(c, st);
+  float dis = 1.0/u_resolution.y;
+  float angMax = 64.0;
+  float ang = floor(map(sampC.r, 0.0, 1.0, 0.0, angMax))*(6.289/angMax);
+  float inc = floor(map(sampC.b, 0.0, 1.0, 0.0, 8.0)*sinMod)/2.0;
+  float angDecider = floor(sampC.r*6.0);
+  if(angDecider == 0.0) {
+    st.x += inc/u_resolution.x;
+  } else if(angDecider == 1.0) {
+    st.x -= inc/u_resolution.x;
+  } else if(angDecider == 2.0) {
+    st.y += inc/u_resolution.y;
+  } else if(angDecider == 3.0) {
+    st.y -= inc/u_resolution.y;
+  }
+
+  float angDeciderB = floor(sampC.g*6.0);
+  if(angDeciderB == 0.0) {
+    st.x += inc/u_resolution.x;
+  } else if(angDeciderB == 1.0) {
+    st.x -= inc/u_resolution.x;
+  } else if(angDeciderB == 2.0) {
+    st.y += inc/u_resolution.y;
+  } else if(angDeciderB == 3.0) {
+    st.y -= inc/u_resolution.y;
+  }
+  // st.x+=cos(ang)*(inc/u_resolution.x);
+  // st.y+=sin(ang)*(inc/u_resolution.y);
   
   //pull in our main textures
   vec4 texC = texture2D(c, st);
   vec4 texG = texture2D(g, st);
   vec4 texP = texture2D(p, st);
+  vec4 texPStatic = texture2D(p, stDebug);
   
   //map luminance as a y value on our gradient
   vec2 lum = vec2(0.5, texP.r);
+  vec2 lumB = vec2(0.5, texPStatic.r);
   //pick the color off of g based on luminance
   vec4 colVal = texture2D(g, lum);
+  vec4 colValB = texture2D(g, lum);
 
   //initialize color
   vec3 color = vec3(0.0);
   
   //only apply color on the last pass, keep image black and white for now
+  color = texP.rgb;
+  
   if(lastPass == false) {
     color = texP.rgb;
   } else {
     color = colVal.rgb;
   }
-
-  //Draw margin, use 0 and 1 since we shrunk stB
-  if(stB.x <= 0.0 || stB.x >= 1.0 || stB.y <= 0.0 || stB.y >= 1.0) {
-    color = bgc;
-  }
-
-  //luminance of C controls opacity of detail
-  float mixAmt = map(texC.r, 0.0, 0.3, 0.0, 1.0);
-  //apply color on last pass and only if its the foreground elements
-  if(lastPass == false && texC.r < 0.3) {
-    color = mix(bgc.rgb, color.rgb, mixAmt);
-  }
-
-  if(lastPass == true) {
-    color = mix(bgc.rgb, color.rgb, texC.r);
   
-    if(texP.r > 0.5) {
-      if(texC.r < 1.0) {
-        color = adjustSaturation(color, 0.5);
-      }
-    } 
-
+  if(lastPass == true) {
+    // color = colVal.rgb;
+    
+    // color = adjustContrast(color, 0.2);
+    // color = adjustSaturation(color, 0.5);
     //color noise
-    float noiseGray = random(st.xy)*0.1;
-    color += noiseGray;
+    // float noiseGray = random(st.xy)*0.075;
+    // color += noiseGray;
+    
+
+    //Draw margin, use 0 and 1 since we shrunk stB
+    if(stB.x <= 0.0 || stB.x >= 1.0 || stB.y <= 0.0 || stB.y >= 1.0) {
+      color = bgc;
+    }
   }
+  // color = texG.rgb;//texP.rgb;
 
   gl_FragColor = vec4(color, 1.0);
 }

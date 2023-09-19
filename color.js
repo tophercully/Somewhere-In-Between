@@ -9,6 +9,7 @@ bgCols = [
   "#212122", //ink black
   "#1B1B1B", //eerie black
   "#242124", //raisin black
+  "#ffb1ed",
 ];
 
 bgNames = [
@@ -23,9 +24,11 @@ bgNames = [
   "Eerie Black",
   "Raisin Black",
 ];
+bgColsB = ['#ECECEE', "#e6dcdc", "#272727"]
+
 //Background color parameters
-bgNum = randomInt(0, 9);
-bgc = '#ECECEE'//bgCols[bgNum];
+bgNum = ri(0, bgColsB.length-1);
+bgc = bgColsB[bgNum];
 bgName = bgNames[bgNum];
 
 //Make a color that always contrasts bgc
@@ -109,7 +112,17 @@ const wildberry = [
 const burn = ["#00b4e2","#fd4f92","#ff7b89","#ffa070","#ffd403"]
 
 const overlook = ["#3d4d20","#ad0b08","#1d5473","#798b97","#b76439","#d2955f"]
-
+earth = ["#59b4be","#F2E7AF","#D99774","#A5583C","#582C21"]
+rust = ["#D9B88F","#BE814B","#BE754C","#8C4227","#402722"]
+natural = ["#6f1d1b","#bb9457","#432818","#99582a","#ffe6a7"]
+firewatch = ["#c9cba3","#ffe1a8","#e26d5c","#723d46","#472d30"]
+leaves = ["#585123","#eec170","#f2a65a","#f58549","#772f1a"]
+rose = ["#386641","#6a994e","#a7c957","#f2e8cf","#bc4749"]
+cool = ["#03045e","#023e8a","#0077b6","#0096c7","#00b4d8","#48cae4","#90e0ef","#ade8f4","#caf0f8"]
+okeeffe = ["#3c2048","#a73721","#4c5080","#669293","#bb9d6d","#3d1617","#d2bd9e"]
+clay = ["#9c785e","#39322a","#4a4b3f","#773320","#572e20","#29191c","#968573","#dcc6ae"]
+tangerine = ["#fcfcfc","#9c887e","#f0d2bf","#f1ae83","#f1873a","#f26800","#cbcc9b","#024302"]
+flowerMarket = ["#b4b1c6","#d3c0c6","#a33139","#a54e44","#dbce99","#9db5c6","#cd886f"]
 const retroBaby = [
   '#8fb886', 
 "#e7b763", 
@@ -121,6 +134,36 @@ comboA = ["#142e70", "#f74d13"]
 comboE = ['#F57103', '#00598D', '#214C25']
 comboF = ['#de3be1', "#e9a32b"]
 
+testC = [
+  "#EC521A",
+"#3656C9",
+"#AD80C3",
+"#74BFFE",
+"#FF3B09",
+"#5B7554",
+"#047B37",
+"#FDD4C3",
+"#FE7BA1"
+]
+
+mono = [bgc, frameCol]//["#ced4da","#adb5bd","#6c757d","#495057","#343a40"]
+
+warmCool = ["#219ebc","#023047","#ffb703","#fb8500"]
+// easter = ["#70d6ff","#ff70a6","#ff9770","#ffd670"]
+fall = ["#813405","#d45113","#f9a03f","#f8dda4"]
+
+allCols = [
+  "#FF4D21",
+  "#ff70a6",
+  "#047B37",
+  "#74BFFE",
+  "#3656C9",
+  '#FF6C2F',
+  "#5B7554",
+  "#9a0603",
+  '#BB76CF',
+  "#F6A026",
+]
 
 const pals = [shepard, source, soft, mcWoot, comboE, comboA, comboF, burn, retroBaby, wildberry];
 
@@ -138,8 +181,8 @@ const palNames = [
 ];
 
 //Palette parameters
-palNum = randomInt(0, pals.length-1);
-pal = pals[palNum];
+palNum = ri(0, pals.length-1);
+pal = allCols//pals[palNum];
 palName = palNames[palNum];
 
 //Shuffle that full palette

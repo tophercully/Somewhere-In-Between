@@ -1,9 +1,9 @@
-function randomInt(min, max) {
+function ri(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(fxrand() * (max - min + 1) + min); // The maximum is exclusive and the minimum is inclusive
 }
-function randomVal(min, max) {
+function rv(min, max) {
   return fxrand() * (max - min) + min;
 }
 function map_range(value, low1, high1, low2, high2) {
@@ -93,7 +93,7 @@ function updateURLParameter(url, param, paramVal)
 }
 
 function randColor() {
-  return chroma(truePal[randomInt(0, truePal.length-1)]).saturate(0).hex()
+  return chroma(truePal[ri(0, truePal.length-1)]).saturate(0).hex()
 }
 
 function angBetween(x1, y1, x2, y2) {
@@ -128,16 +128,93 @@ function average(array) {
 ////////////////////////////////////////
 
 function gradLUT() {
-  scl = 200
-  thisPal = [frameCol, truePal[0], truePal[1], frameCol]
-    for(let y = 0; y < h; y+=w/scl) {
+  scl = 300
+  thisCol = randColor()
+  tiers = 1
+  maxCols = truePal.length//truePal.length//constrain(randomInt(3, truePal.length-1), 3, 6)
+  thisPal = []//[thisCol]
+  // thisPal.push(bgc)
+  // thisPal.push(bgc)
+  thisPal.push(bgc)
+  thisPal.push(truePal[0])
+  thisPal.push(truePal[1])
+  thisPal.push(frameCol)
+  // thisPal.push(frameCol)
+  // thisPal.push(frameCol)
+  // for(let i = 0; i < maxCols; i++) {
+  //   thisPal.push(truePal[i])
+  // }
+  // thisPal.push(chroma(truePal[0]).desaturate(1).hex())
+  // thisPal.push(chroma(truePal[1]).saturate(2).hex())
+  // thisPal.push('black')
+  // shuff(thisPal)
+  for(let y = 0; y < h; y++) {
+      
+      
       nY = map(y, 0, h, 0, 1)
-      // colScale = chroma.scale(truePal.slice(0, numColors))//.classes(20)
-      colScale = chroma.scale(thisPal).padding([-0.8, 0.0])
+      
+      colScale = chroma.scale(thisPal).padding(0.0).classes(thisPal.length)//.classes((maxCols+2)*5)
       hueCol = colScale(nY).hex()
       col = hueCol
       g.stroke(col)
-      g.strokeWeight(h/scl)
+      g.strokeWeight(2)
       g.line(0, y, w,y)
-    }
+  }
+}
+
+function newPattern() {
+  c.rectMode(CENTER)
+  // cols = ri(2, 10)
+  // rows = ri(2, 10)
+  // cellW = w/cols
+  // cellH = h/rows
+  // c.noStroke()
+  // for(let y = 0; y < rows; y++) {
+  //   for(let x = 0; x < cols; x++) {
+  //     c.fill(rv(0, 255), rv(0, 255), rv(0, 255))
+  //     c.rect(x*cellW+cellW/2, y*cellH+cellH/2, cellW, cellH)
+  //   }
+  // }
+
+  for(let i = 0; i < 200; i++) {
+    c.fill(rv(0, 255), rv(0, 255), rv(0, 255))
+    c.rect(rv(0, w), rv(0, h), rv(0, w/2), rv(0, w/2))
+  }
+}
+
+function mainPattern() {
+  p.rectMode(CENTER)
+  // cols = ri(2, 5)
+  // rows = ri(2, 5)
+  // p.noStroke()
+  // cellW = w/cols
+  // cellH = h/rows
+  // for(let y = 0; y < rows; y++) {
+  //   for(let x = 0; x < cols; x++) {
+  //     p.fill(rv(0, 255))
+  //     p.rect(x*cellW+cellW/2, y*cellH+cellH/2, cellW, cellH)
+  //   }
+  // }
+  p.noStroke()
+  dens = ri(3, 10)
+  colArray = []
+  for(let i = 0; i < dens; i++) { 
+    colArray[i] = map(i, 0, dens-1, 0, 255) 
+
+  }
+  shuff(colArray)
+  for(let i = 0; i < dens; i++) {
+    wid = map(i, 0, dens, (w-(marg))*0.6, 0)
+    hei = map(i, 0, dens, (h-(marg))*0.6, 0)
+
+    p.fill(colArray[i])
+    p.rect(w/2, h/2, wid, hei)
+    // p.rect(rv(0,w),rv(0,w),rv(w/10, w/2), rv(w/10, w/2))
+  }
+  //accents
+  for(let i = 0; i < 150; i++) {
+    p.fill(rv(0, 255))
+    // p.strokeWeight(rv(0.5, 3))
+    p.square(rv(0, w),rv(0,h), rv(0.5, 10))
+  }
 }

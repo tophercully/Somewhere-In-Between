@@ -1,6 +1,7 @@
-w= 1600
-h = 2000
-marg = 100
+splt = 2
+w= 320//1600/splt
+h = 400//2000/splt
+marg = 5//30/splt
 
 let shade;
 function preload() {
@@ -16,7 +17,15 @@ if(url.searchParams.has('size') == true) {
 pxSize = url.searchParams.get('size')
 
 //parameters
-numPasses = 0
+numPasses = 1//500
+
+scrollX = 0
+scrollY = 0
+if(fxrand() < 0.5) {
+  scrollX = plusOrMin(rv(0.00025, 0.00075))
+} else {
+  scrollY = plusOrMin(rv(0.00025, 0.00075))
+}
 
 $fx.features({
   "param1": 0,
@@ -32,8 +41,9 @@ function setup() {
   } else if (pxSize == 3) {
     pixelDensity(3)
   }
+  pixelDensity(4)
   recur = createGraphics(w, h, WEBGL)
-  canv = createGraphics(w, h)
+  canv = createCanvas(1600, 2000)
   p = createGraphics(w, h)
   c = createGraphics(w, h)
   b = createGraphics(w, h)
@@ -41,17 +51,34 @@ function setup() {
   angleMode(DEGREES)
   p.angleMode(DEGREES)
   c.angleMode(DEGREES)
-  noLoop()
+  // noLoop()
   p.noLoop()
   c.noLoop()
+  frameRate(30)
 }
-
+dur = ri(50, 100)
+expo = 1
+segs = ri(2, 4)
 function draw() {
-  background(bgc)
-  p.background('white')
-  c.background(0)
+  
 
   //Sketch
+  if(frameCount == 1) {
+    background(bgc)
+    p.background(0)
+    c.background(0)
+    g.background(255)
+    gradLUT()
+    mainPattern()
+    newPattern()
+    // newDur = 360/freq
+  }
+
+  if(frameCount%ceil(dur/segs)==0 && frameCount !== dur) {
+    newPattern()
+  }
+  sinMod = 1//map(sin((frameCount*(freq))-45), -1, 1, 0.5, 1)
+  cosMod = 1////map(cos((frameCount*(freq))-45), -1, 1, 0, 1)
 
   //Post processing
    lastPass = false
@@ -62,7 +89,12 @@ function draw() {
    shade.setUniform("p", p);
    shade.setUniform("g", g);
    shade.setUniform("c", c);
-   shade.setUniform("seed", randomVal(0, 10));
+   shade.setUniform("scrollX", scrollX);
+   shade.setUniform("scrollY", scrollY);
+   shade.setUniform("sinMod", map(pow(sinMod, expo), 0, pow(1, expo), 0, 1));
+   shade.setUniform("cosMod", map(pow(cosMod, expo), 0, pow(1, expo), 0, 1));
+
+   shade.setUniform("seed", rv(0, 10));
    shade.setUniform("marg", map(marg, 0, w, 0, 1));
    shade.setUniform("lastPass", lastPass)
    shade.setUniform("bgc", [
@@ -73,6 +105,7 @@ function draw() {
 
    //recursive passes
    for(let i = 0; i < numPasses; i++) {
+   
     if(i == 0) {
       firstPass = true
     } else {
@@ -90,8 +123,21 @@ function draw() {
    shade.setUniform("lastPass", lastPass)
    shade.setUniform("p", p)
    recur.rect(0, 0, w, h)
-   image(recur, -w/2, -h/2)
+   rectMode(CENTER)
+   image(recur, -800, -1000, 1600, 2000)
 
    //render preview
-   fxpreview()
+   
+
+if(frameCount == floor(dur)) {
+  noLoop()
+
+  fxpreview()
+  //  save(fxhash)
+   setTimeout(()=> {
+    // window.location.reload();
+ }
+ ,2000);
+}
+
 }
