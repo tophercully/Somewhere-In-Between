@@ -36,7 +36,7 @@ function setLineDash(list) {
 
 function keyTyped() {
   if (key === "s" || key === "S") {
-    save("TEMPEST"+fxhash);
+    save("shifta"+fxhash);
   }
   if (key === "1") {
     window.history.replaceState('', '', updateURLParameter(window.location.href, "size", "1"));
@@ -49,6 +49,24 @@ function keyTyped() {
   if (key === "3") {
     window.history.replaceState('', '', updateURLParameter(window.location.href, "size", "3"));
     window.location.reload();
+  }
+  if (key === "f" || key === 'F') {
+    forever = true()
+    dur = 999999999999999999999999999999999999999999999
+    loop()
+  }
+  if (key === "p" || key === 'F') {
+    dur = 700
+    loop()
+  }
+}
+function keyPressed() {
+  if(keyCode == 32) {
+    if(looping == false) {
+      loop()
+      looping = true
+      // dur += segInc 
+    } 
   }
 }
 function updateURLParameter(url, param, paramVal)
@@ -135,35 +153,36 @@ function gradLUT() {
   scl = 300
   thisCol = randColor()
   tiers = 1
-  maxCols = truePal.length//truePal.length//constrain(randomInt(3, truePal.length-1), 3, 6)
+  maxCols = 3//truePal.length//truePal.length//constrain(randomInt(3, truePal.length-1), 3, 6)
   thisPal = []//[thisCol]
   // thisPal.push(bgc)
   // thisPal.push(bgc)
   if(bgNum == 0) {
+    //bg is white
     blendAmt = 0.1
+    blendBG = 0.2
+    blendFrame = 0.025
   } else {
-    blendAmt = 0.025
+    //bg is black
+    blendAmt = 0.1
+    blendBG = 0.025
+    blendFrame = 0.1
   }
-  blendAmt = 0
-  thisPal.push(chroma.mix(bgc, underCols[0], blendAmt).hex())
-  thisPal.push(truePal[0])
-  thisPal.push(truePal[1])
-  thisPal.push(chroma.mix(frameCol, underCols[0], blendAmt).hex())
-  // thisPal.push(frameCol)
-  // thisPal.push(frameCol)
-  // for(let i = 0; i < maxCols; i++) {
-  //   thisPal.push(truePal[i])
-  // }
-  // thisPal.push(chroma(truePal[0]).desaturate(1).hex())
-  // thisPal.push(chroma(truePal[1]).saturate(2).hex())
-  // thisPal.push('black')
-  // shuff(thisPal)
+  
+  thisPal.push(chroma.mix(bgc, underCols[0], blendBG).hex())
+  for(let i =0; i < maxCols; i++) {
+    thisPal.push(chroma.mix(truePal[i], underCol, blendAmt).hex())
+  }
+  // thisPal.push(chroma.mix(truePal[0], underCol, blendAmt).hex())
+  // thisPal.push(chroma.mix(truePal[1], underCol, blendAmt).hex())
+  // thisPal.push(chroma.mix(truePal[2], underCol, blendAmt).hex())
+  thisPal.push(chroma.mix(frameCol, underCol, blendFrame).hex())
   for(let y = 0; y < h; y++) {
       
       
       nY = map(y, 0, h, 0, 1)
       
-      colScale = chroma.scale(thisPal).padding(0.0).classes(thisPal.length)//.classes((maxCols+2)*5)
+      colScale = chroma.scale(thisPal).padding(0.0)//.classes(thisPal.length*3)//.classes((maxCols+2)*5)
       hueCol = colScale(nY).hex()
       
       
@@ -176,19 +195,24 @@ function gradLUT() {
 
 function newPattern() {
   c.rectMode(CENTER)
-  // cols = ri(2, 10)
-  // rows = ri(2, 10)
-  // cellW = w/cols
-  // cellH = h/rows
-  // c.noStroke()
-  // for(let y = 0; y < rows; y++) {
-  //   for(let x = 0; x < cols; x++) {
-  //     c.fill(rv(0, 255), rv(0, 255), rv(0, 255))
-  //     c.rect(x*cellW+cellW/2, y*cellH+cellH/2, cellW, cellH)
-  //   }
-  // }
+  rows = ri(4, 10)
+  cols = ri(4, 10)
+  console.log(cols, rows)
+  cellW = w/cols
+  cellH = h/rows
+  c.noStroke()
+  for(let y = 0; y < rows; y++) {
+    for(let x = 0; x < cols; x++) {
+      c.fill(rv(0, 255), rv(0, 255), rv(0, 255))
+      c.push()
+      // c.translate(rv(-cellW/4, cellW/4), rv(-cellH/4, cellH/4))
+      c.translate(rv(-cellW/2, cellW/2), rv(-cellH/2, cellH/2))
+      c.rect(x*cellW+cellW/2, y*cellH+cellH/2, cellW, cellH)
+      c.pop()
+    }
+  }
 
-  for(let i = 0; i < 100*displaceDens; i++) {
+  for(let i = 0; i < 1*displaceDens; i++) {
     c.fill(rv(0, 255), rv(0, 255), rv(0, 255))
     c.rect(rv(0, w), rv(0, h), rv(0, w/displaceDens), rv(0, w/displaceDens))
   }
@@ -209,34 +233,42 @@ function mainPattern() {
   // }
   p.noStroke()
   p.stroke(255)
-  dens = 3//ri(4, 10)
+  dens = ri(4, 20)//4, 20
+  console.log('dens '+dens)
   colArray = []
+  center = createVector(rv(w*0.4, w*0.6), rv(h*0.4, h*0.6))
   for(let i = 0; i < dens; i++) { 
-    colArray[i] = map(i, 0, dens-1, 255, (255/4)+3) 
+    colArray[i] = map(i, 0, dens-1, 255, (255/5)+3) 
 
   }
   shuff(colArray)
   for(let i = 0; i < dens; i++) {
-    wid = map(i, 0, dens, (w-(marg))*0.6, 0)
-    hei = map(i, 0, dens, (h-(marg))*0.6, 0)
+    wid = map(i, 0, dens, (w-(marg))*0.666, 0)
+    hei = map(i, 0, dens, (h-(marg))*0.666, 0)
 
     p.fill(colArray[i])
-    p.rect(w/2, h/2, wid, hei)
+    p.strokeWeight(rv(0, 2))
+    
+    p.rect(center.x, center.y, wid, hei)
     // p.rect(rv(0,w),rv(0,w),rv(w/10, w/2), rv(w/10, w/2))
   }
   //accents
-  for(let i = 0; i < 150; i++) {
+  p.noStroke()
+  for(let i = 0; i < 200; i++) {
     p.fill(rv(0, 255))
     // p.strokeWeight(rv(0.5, 3))
+    // p.strokeWeight(rv(0, 2))
     p.square(rv(0, w),rv(0,h), rv(0.5, 10))
   }
 }
 
 function bTexture() {
   b.noStroke()
-  for(let i = 0; i < 4000; i++) {
-    val = rv(0, 255)
-    b.fill(chroma(val,val,val).alpha(0.01+rv(-0.0001, 0.0001)).hex())
-    b.circle(rv(0, w), rv(0, h), rv(0, w*0.4))
+  for(let i = 0; i < 3500; i++) {
+    r= rv(w*0.25, w)
+    val = 255//rv(0, 255)
+    // b.strokeWeight(rv(0, 0.5))
+    b.fill(chroma(val,val,val).alpha(0.002+rv(-0.0001, 0.0001)).hex())
+    b.circle(rv(-r, w+r), rv(-r, h+r), r)
   }
 }

@@ -109,7 +109,7 @@ void main() {
   float dis = 1.0/u_resolution.y;
   float angMax = 64.0;
   float ang = floor(map(sampC.r, 0.0, 1.0, 0.0, angMax))*(6.289/angMax);
-  float inc = floor(map(sampC.b, 0.0, 1.0, 0.0, 6.0)*sinMod)/1.0;
+  float inc = floor(map(sampC.b, 0.0, 1.0, 0.0, 8.0)*sinMod)/1.0;
   float angDecider = floor(sampC.r*5.0);
   if(angDecider == 0.0) {
     st.x += inc/u_resolution.x;
@@ -196,17 +196,19 @@ void main() {
     //   color = adjustExposure(color, expoInc);
     // }
     // color = adjustContrast(color, 0.2);
-    // color = adjustSaturation(color, 0.5);
+    // texB.rgb = adjustContrast(texB.rgb, 1.0);
     //color noise
 
     //Draw margin, use 0 and 1 since we shrunk stB
     if(stB.x <= 0.0 || stB.x >= 1.0 || stB.y <= 0.0 || stB.y >= 1.0) {
-      color = bgc;
+      color = texture2D(g, vec2(0.5, 0.0)).rgb;//bgc;
     }
     // stPaper.x*=0.25;
     // stPaper.y*=2.0;
     // stPaper.y += st.x;
-    float noiseGray = random(stPaper.xy)*0.05;
+    // color = adjustSaturation(color, map(texB.g*3.0, 0.0, 1.0, -0.1, 0.5));
+    color = adjustSaturation(color, 1.0);
+    float noiseGray = random(stDebug.xy)*0.05;
     color += noiseGray;
 
     // color += sin(texB.r*(6.289*3.0)+(texPStatic.r*10.0))*(-0.05);

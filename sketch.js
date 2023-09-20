@@ -1,7 +1,7 @@
 splt = 2
 w= 320//1600/splt
 h = 400//2000/splt
-marg = 0//30/splt
+marg = 5//30/splt
 
 let shade;
 function preload() {
@@ -20,10 +20,15 @@ pxSize = url.searchParams.get('size')
 numPasses = 1//500
 shadeSeed = rv(0, 10)
 
-displaceDens = rv(2, 4)//the max size of each panel displacer, by h/x
+displaceDens = 2//rv(2, 4)//the max size of each panel displacer, by h/x
 
 scrollX = 0
 scrollY = 0
+
+finished = false
+looping = true
+forever = false
+
 if(fxrand() < 0.5) {
   scrollX = plusOrMin(rv(0.00025, 0.00075))
 } else {
@@ -61,7 +66,8 @@ function setup() {
 }
 dur = 100//ri(50, 100)
 expo = 1
-segs = 3//ri(4, 7)
+segs = Math.floor(dur/30)//ri(3, 6)
+segInc = Math.ceil(dur/segs)
 function draw() {
   
 
@@ -79,7 +85,7 @@ function draw() {
     // newDur = 360/freq
   }
 
-  if(frameCount%ceil(dur/segs)==0 && frameCount !== dur) {
+  if(frameCount%segInc==0 && frameCount !== dur) {
     newPattern()
   }
   sinMod = 1//map(sin((frameCount*(freq))-45), -1, 1, 0.5, 1)
@@ -135,15 +141,31 @@ function draw() {
    //render preview
    
 
-if(frameCount == floor(dur)) {
+if(frameCount == floor(dur) && finished == false) {
   noLoop()
-
+  newPattern()
   fxpreview()
-  //  save(fxhash)
+  finished = true
+  //  save('shifta'+fxhash)
    setTimeout(()=> {
     // window.location.reload();
  }
- ,3000);
+ ,5000);
+} 
+
+if(frameCount == floor(dur) && finished == true && forever == false) {
+  noLoop()
+  newPattern()
+  looping = false
+  dur += segInc
 }
+
+if(finished == true && forever == true && frameCount == dur) {
+  // newPattern()
+  looping = true
+  dur += segInc
+}
+
+
 
 }

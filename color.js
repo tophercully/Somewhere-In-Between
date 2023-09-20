@@ -24,10 +24,10 @@ bgNames = [
   "Eerie Black",
   "Raisin Black",
 ];
-bgColsB = [//'#ECECEE', "#e6dcdc", 
-// "#272727", 
-'#F2E2D1', '#1d1612']
-// bgColsB = ['white', 'black']
+// bgColsB = [//'#ECECEE', "#e6dcdc", 
+// // "#272727", 
+// '#F2E2D1', '#1d1612']
+bgColsB = ['white', 'black']
 
 //Background color parameters
 bgNum = ri(0, bgColsB.length-1);
@@ -161,16 +161,33 @@ warmCool = ["#219ebc","#023047","#ffb703","#fb8500"]
 fall = ["#813405","#d45113","#f9a03f","#f8dda4"]
 
 allCols = [
-  "#FF4D21",
+  // "#FF4D21",
   "#ff70a6",
   "#047B37",
   "#74BFFE",
+  // "#1791D3",
   "#3656C9",
   '#FF6C2F',
-  "#5B7554",
+  // "#5B7554",
   "#9a0603",
   '#BB76CF',
+  // "#481D61",
   // "#F6A026",
+
+  
+
+]
+
+testD = [
+  "#FEA739",
+  "#84A6DF",
+  "#FAABA3",
+  "#024634",
+  "#012F51",
+  "#FA0705",
+  "#FDCF02",
+  "#F25129",
+  "#BEA36C"
 ]
 
 const pals = [shepard, source, soft, mcWoot, comboE, comboA, comboF, burn, retroBaby, wildberry];
@@ -195,6 +212,9 @@ palName = palNames[palNum];
 
 //Shuffle that full palette
 truePal = shuff(pal);
+
+preCol = chroma.mix(truePal[0], truePal[1], 0.5)
+underCol = chroma.mix(preCol, truePal[2], 0.6666)
 
 //Pass our palette back to the CSS spinner
 let root = document.documentElement;
