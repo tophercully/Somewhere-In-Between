@@ -9,6 +9,7 @@ varying vec2 vTexCoord;
 uniform sampler2D p;
 uniform sampler2D g;
 uniform sampler2D c;
+uniform sampler2D b;
 uniform vec2 u_resolution;
 uniform float seed;
 uniform float sinMod;
@@ -108,8 +109,8 @@ void main() {
   float dis = 1.0/u_resolution.y;
   float angMax = 64.0;
   float ang = floor(map(sampC.r, 0.0, 1.0, 0.0, angMax))*(6.289/angMax);
-  float inc = floor(map(sampC.b, 0.0, 1.0, 0.0, 8.0)*sinMod)/2.0;
-  float angDecider = floor(sampC.r*6.0);
+  float inc = floor(map(sampC.b, 0.0, 1.0, 0.0, 6.0)*sinMod)/1.0;
+  float angDecider = floor(sampC.r*5.0);
   if(angDecider == 0.0) {
     st.x += inc/u_resolution.x;
   } else if(angDecider == 1.0) {
@@ -120,7 +121,7 @@ void main() {
     st.y -= inc/u_resolution.y;
   }
 
-  float angDeciderB = floor(sampC.g*6.0);
+  float angDeciderB = floor(sampC.g*5.0);
   if(angDeciderB == 0.0) {
     st.x += inc/u_resolution.x;
   } else if(angDeciderB == 1.0) {
@@ -137,7 +138,15 @@ void main() {
   vec4 texC = texture2D(c, st);
   vec4 texG = texture2D(g, st);
   vec4 texP = texture2D(p, st);
+  vec4 texB = texture2D(b, stDebug);
   vec4 texPStatic = texture2D(p, stDebug);
+
+  float startRot = seed;
+  float rotAmt = map((texP.r+texP.g+texP.b)/3.0, 0.0, 1.0, 0.0, startRot+(6.28319*4.0));
+  float sclAmt = 200.00;
+  
+  stPaper.xy *= rotate(rotAmt+startRot);
+  stPaper.xy *= 200.0;
   
   //map luminance as a y value on our gradient
   vec2 lum = vec2(0.5, texP.r);
@@ -161,19 +170,51 @@ void main() {
   if(lastPass == true) {
     // color = colVal.rgb;
     
+    //Paper texture
+    stPaper.xy *= rotate(0.7853981633974483*2.0);
+    float damageThresh = noise(seed+stPaper.xy);
+    float damageDark = 1.0-damageThresh;
+    float accentNoise = noise(seed+stB.xy*500.0);
+    float oppAccentNoise = 1.0 - accentNoise;
+    //offset grid
+    float offsetDens = 1000.0;
+    float vSinB = sin(seed+st.y*offsetDens);
+    float hSinGuide = sin(seed+st.y*(offsetDens/2.0));
+    float hSinB = 0.0;
+    if(hSinGuide > 0.0) {
+      hSinB = sin(seed+st.x*(offsetDens));
+    } else {
+      hSinB = sin(seed+st.x*offsetDens)*-1.0;
+    }
+
+    float midPt = 0.6;
+    float expoInc = 0.04;
+    //brush texture
+    // if(damageThresh > midPt && damageThresh < midPt+0.08) {
+    //   color = adjustExposure(color, -expoInc*0.75);
+    // } else if(damageDark > midPt && damageDark < midPt+0.08) {
+    //   color = adjustExposure(color, expoInc);
+    // }
     // color = adjustContrast(color, 0.2);
     // color = adjustSaturation(color, 0.5);
     //color noise
-    // float noiseGray = random(st.xy)*0.075;
-    // color += noiseGray;
-    
 
     //Draw margin, use 0 and 1 since we shrunk stB
     if(stB.x <= 0.0 || stB.x >= 1.0 || stB.y <= 0.0 || stB.y >= 1.0) {
       color = bgc;
     }
+    // stPaper.x*=0.25;
+    // stPaper.y*=2.0;
+    // stPaper.y += st.x;
+    float noiseGray = random(stPaper.xy)*0.05;
+    color += noiseGray;
+
+    // color += sin(texB.r*(6.289*3.0)+(texPStatic.r*10.0))*(-0.05);
+    
+
+    
   }
-  // color = texG.rgb;//texP.rgb;
+  // color = texB.rgb;//texP.rgb;
 
   gl_FragColor = vec4(color, 1.0);
 }

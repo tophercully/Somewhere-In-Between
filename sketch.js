@@ -1,7 +1,7 @@
 splt = 2
 w= 320//1600/splt
 h = 400//2000/splt
-marg = 5//30/splt
+marg = 0//30/splt
 
 let shade;
 function preload() {
@@ -18,6 +18,9 @@ pxSize = url.searchParams.get('size')
 
 //parameters
 numPasses = 1//500
+shadeSeed = rv(0, 10)
+
+displaceDens = rv(2, 4)//the max size of each panel displacer, by h/x
 
 scrollX = 0
 scrollY = 0
@@ -56,9 +59,9 @@ function setup() {
   c.noLoop()
   frameRate(30)
 }
-dur = ri(50, 100)
+dur = 100//ri(50, 100)
 expo = 1
-segs = ri(2, 4)
+segs = 3//ri(4, 7)
 function draw() {
   
 
@@ -67,10 +70,12 @@ function draw() {
     background(bgc)
     p.background(0)
     c.background(0)
+    b.background(0)
     g.background(255)
     gradLUT()
     mainPattern()
     newPattern()
+    bTexture()
     // newDur = 360/freq
   }
 
@@ -89,12 +94,13 @@ function draw() {
    shade.setUniform("p", p);
    shade.setUniform("g", g);
    shade.setUniform("c", c);
+   shade.setUniform("b", b);
    shade.setUniform("scrollX", scrollX);
    shade.setUniform("scrollY", scrollY);
    shade.setUniform("sinMod", map(pow(sinMod, expo), 0, pow(1, expo), 0, 1));
    shade.setUniform("cosMod", map(pow(cosMod, expo), 0, pow(1, expo), 0, 1));
 
-   shade.setUniform("seed", rv(0, 10));
+   shade.setUniform("seed", shadeSeed);
    shade.setUniform("marg", map(marg, 0, w, 0, 1));
    shade.setUniform("lastPass", lastPass)
    shade.setUniform("bgc", [
@@ -137,7 +143,7 @@ if(frameCount == floor(dur)) {
    setTimeout(()=> {
     // window.location.reload();
  }
- ,2000);
+ ,3000);
 }
 
 }

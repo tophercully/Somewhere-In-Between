@@ -24,7 +24,10 @@ bgNames = [
   "Eerie Black",
   "Raisin Black",
 ];
-bgColsB = ['#ECECEE', "#e6dcdc", "#272727"]
+bgColsB = [//'#ECECEE', "#e6dcdc", 
+// "#272727", 
+'#F2E2D1', '#1d1612']
+// bgColsB = ['white', 'black']
 
 //Background color parameters
 bgNum = ri(0, bgColsB.length-1);
@@ -38,6 +41,11 @@ if (calcBgLum > 0.5) {
 } else if( calcBgLum < 0.5) {
   frameCol = 'white'; //white
 }
+
+underCols = ['#90402A', '#6F4A01', '#416b9d']
+shuff(underCols)
+
+
 
 //Palettes
 //Always include frameCol instead of black or white so our colors don't blend into bgc
@@ -162,7 +170,7 @@ allCols = [
   "#5B7554",
   "#9a0603",
   '#BB76CF',
-  "#F6A026",
+  // "#F6A026",
 ]
 
 const pals = [shepard, source, soft, mcWoot, comboE, comboA, comboF, burn, retroBaby, wildberry];

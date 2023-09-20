@@ -6,6 +6,10 @@ function ri(min, max) {
 function rv(min, max) {
   return fxrand() * (max - min) + min;
 }
+
+function re(min, max, expo) {
+  return map_range(Math.pow(fxrand(), expo), 0, Math.pow(1, expo), min, max)
+}
 function map_range(value, low1, high1, low2, high2) {
   return low2 + ((high2 - low2) * (value - low1)) / (high1 - low1);
 }
@@ -135,10 +139,16 @@ function gradLUT() {
   thisPal = []//[thisCol]
   // thisPal.push(bgc)
   // thisPal.push(bgc)
-  thisPal.push(bgc)
+  if(bgNum == 0) {
+    blendAmt = 0.1
+  } else {
+    blendAmt = 0.025
+  }
+  blendAmt = 0
+  thisPal.push(chroma.mix(bgc, underCols[0], blendAmt).hex())
   thisPal.push(truePal[0])
   thisPal.push(truePal[1])
-  thisPal.push(frameCol)
+  thisPal.push(chroma.mix(frameCol, underCols[0], blendAmt).hex())
   // thisPal.push(frameCol)
   // thisPal.push(frameCol)
   // for(let i = 0; i < maxCols; i++) {
@@ -155,6 +165,8 @@ function gradLUT() {
       
       colScale = chroma.scale(thisPal).padding(0.0).classes(thisPal.length)//.classes((maxCols+2)*5)
       hueCol = colScale(nY).hex()
+      
+      
       col = hueCol
       g.stroke(col)
       g.strokeWeight(2)
@@ -176,9 +188,9 @@ function newPattern() {
   //   }
   // }
 
-  for(let i = 0; i < 200; i++) {
+  for(let i = 0; i < 100*displaceDens; i++) {
     c.fill(rv(0, 255), rv(0, 255), rv(0, 255))
-    c.rect(rv(0, w), rv(0, h), rv(0, w/2), rv(0, w/2))
+    c.rect(rv(0, w), rv(0, h), rv(0, w/displaceDens), rv(0, w/displaceDens))
   }
 }
 
@@ -196,10 +208,11 @@ function mainPattern() {
   //   }
   // }
   p.noStroke()
-  dens = ri(3, 10)
+  p.stroke(255)
+  dens = 3//ri(4, 10)
   colArray = []
   for(let i = 0; i < dens; i++) { 
-    colArray[i] = map(i, 0, dens-1, 0, 255) 
+    colArray[i] = map(i, 0, dens-1, 255, (255/4)+3) 
 
   }
   shuff(colArray)
@@ -216,5 +229,14 @@ function mainPattern() {
     p.fill(rv(0, 255))
     // p.strokeWeight(rv(0.5, 3))
     p.square(rv(0, w),rv(0,h), rv(0.5, 10))
+  }
+}
+
+function bTexture() {
+  b.noStroke()
+  for(let i = 0; i < 4000; i++) {
+    val = rv(0, 255)
+    b.fill(chroma(val,val,val).alpha(0.01+rv(-0.0001, 0.0001)).hex())
+    b.circle(rv(0, w), rv(0, h), rv(0, w*0.4))
   }
 }
