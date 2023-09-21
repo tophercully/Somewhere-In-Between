@@ -207,9 +207,22 @@ void main() {
     // stPaper.y*=2.0;
     // stPaper.y += st.x;
     // color = adjustSaturation(color, map(texB.g*3.0, 0.0, 1.0, -0.1, 0.5));
-    color = adjustSaturation(color, 1.0);
-    float noiseGray = random(stDebug.xy)*0.05;
+    color = adjustSaturation(color, 0.5);
+    // color = adjustContrast(color, -0.2);
+    float noiseGray = random(stDebug.xy)*0.035;
     color += noiseGray;
+    float expo = 1.0;
+    float amt = 0.0;
+    if(bgc.r < 0.5) {
+      expo = 0.5;
+      amt = 0.01;
+    } else {
+      expo = 0.5;
+      amt = 0.015;
+    }
+
+    
+    color += map(pow(texB.r, expo), 0.0, pow(1.0, expo), -amt,amt);
 
     // color += sin(texB.r*(6.289*3.0)+(texPStatic.r*10.0))*(-0.05);
     

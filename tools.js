@@ -51,13 +51,23 @@ function keyTyped() {
     window.location.reload();
   }
   if (key === "f" || key === 'F') {
-    forever = true()
-    dur = 999999999999999999999999999999999999999999999
-    loop()
+    if(forever == false) {
+      forever = true
+      dur = 999999999999999999999999999999999999999999999
+      loop()
+    } else if(forever == true) {
+      noLoop()
+      forever = false
+    }
+    
   }
   if (key === "p" || key === 'F') {
-    dur = 700
+    dur += 600
     loop()
+  }
+  if (key === "a" || key === 'A') {
+    p.fill(rv(0, 255))
+    p.rect(rv(0, w), rv(0, h), rv(w*0.1, w*0.4))
   }
 }
 function keyPressed() {
@@ -65,7 +75,7 @@ function keyPressed() {
     if(looping == false) {
       loop()
       looping = true
-      // dur += segInc 
+      dur += segInc 
     } 
   }
 }
@@ -153,7 +163,7 @@ function gradLUT() {
   scl = 300
   thisCol = randColor()
   tiers = 1
-  maxCols = 3//truePal.length//truePal.length//constrain(randomInt(3, truePal.length-1), 3, 6)
+  maxCols = 2//truePal.length//truePal.length//constrain(randomInt(3, truePal.length-1), 3, 6)
   thisPal = []//[thisCol]
   // thisPal.push(bgc)
   // thisPal.push(bgc)
@@ -165,11 +175,13 @@ function gradLUT() {
   } else {
     //bg is black
     blendAmt = 0.1
-    blendBG = 0.025
+    blendBG = 0.01
     blendFrame = 0.1
   }
-  
-  thisPal.push(chroma.mix(bgc, underCols[0], blendBG).hex())
+  blendAmt = 0
+  blendBG = 0
+  blendFrame = 0
+  thisPal.push(chroma.mix(bgc, underCol, blendBG).hex())
   for(let i =0; i < maxCols; i++) {
     thisPal.push(chroma.mix(truePal[i], underCol, blendAmt).hex())
   }
@@ -182,7 +194,7 @@ function gradLUT() {
       
       nY = map(y, 0, h, 0, 1)
       
-      colScale = chroma.scale(thisPal).padding(0.0)//.classes(thisPal.length*3)//.classes((maxCols+2)*5)
+      colScale = chroma.scale(thisPal).padding(0.0).classes(thisPal.length)//.classes((maxCols+2)*5)
       hueCol = colScale(nY).hex()
       
       
@@ -263,12 +275,23 @@ function mainPattern() {
 }
 
 function bTexture() {
-  b.noStroke()
-  for(let i = 0; i < 3500; i++) {
-    r= rv(w*0.25, w)
+  b.noFill()
+  for(let i = 0; i < 10000; i++) {
+    r= rv(w*0.15, w)
     val = 255//rv(0, 255)
+    ang = (90*ri(0,1))+rv(-5, 5)
+    here = createVector(rv(0, w), rv(0, h))
+    length  = rv(w*0.1, w*0.2)
+    ptA = ptFromAng(here.x, here.y, ang, length)
+    ptB = ptFromAng(here.x, here.y, ang, -length)
+    b.stroke(chroma(val,val,val).alpha(0.5+rv(-0.0001, 0.0001)).hex())
+    b.strokeWeight(rv(0.25, 0.5))
+    b.line(ptA.x, ptA.y, ptB.x, ptB.y)
+
+    b.strokeWeight(rv(0.5, 5))
+    b.point(rv(0, w), rv(0, h))
     // b.strokeWeight(rv(0, 0.5))
-    b.fill(chroma(val,val,val).alpha(0.002+rv(-0.0001, 0.0001)).hex())
-    b.circle(rv(-r, w+r), rv(-r, h+r), r)
+    // b.fill(chroma(val,val,val).alpha(0.002+rv(-0.0001, 0.0001)).hex())
+    // b.circle(rv(-r, w+r), rv(-r, h+r), r)
   }
 }

@@ -24,9 +24,13 @@ bgNames = [
   "Eerie Black",
   "Raisin Black",
 ];
-// bgColsB = [//'#ECECEE', "#e6dcdc", 
-// // "#272727", 
-// '#F2E2D1', '#1d1612']
+// bgColsB = [
+//   // '#ECECEE', 
+// "#e6dcdc", 
+// "#272727", 
+// '#F2E2D1', 
+// '#1d1612'
+// ]
 bgColsB = ['white', 'black']
 
 //Background color parameters
@@ -44,6 +48,8 @@ if (calcBgLum > 0.5) {
 
 underCols = ['#90402A', '#6F4A01', '#416b9d']
 shuff(underCols)
+
+
 
 
 
@@ -161,14 +167,14 @@ warmCool = ["#219ebc","#023047","#ffb703","#fb8500"]
 fall = ["#813405","#d45113","#f9a03f","#f8dda4"]
 
 allCols = [
-  // "#FF4D21",
+  "#FF4D21",
   "#ff70a6",
   "#047B37",
   "#74BFFE",
-  // "#1791D3",
+  "#1791D3",
   "#3656C9",
   '#FF6C2F',
-  // "#5B7554",
+  "#5B7554",
   "#9a0603",
   '#BB76CF',
   // "#481D61",
@@ -213,8 +219,16 @@ palName = palNames[palNum];
 //Shuffle that full palette
 truePal = shuff(pal);
 
-preCol = chroma.mix(truePal[0], truePal[1], 0.5)
-underCol = chroma.mix(preCol, truePal[2], 0.6666)
+underCol = chroma(truePal[0]).hsl()
+bgc = chroma(underCol[0], 0.1, 0.9, 'hsl').hex()
+
+//Make a color that always contrasts bgc
+calcBgLum = chroma(bgc).luminance();
+if (calcBgLum > 0.5) {
+  frameCol = 'black'; //black
+} else if( calcBgLum < 0.5) {
+  frameCol = 'white'; //white
+}
 
 //Pass our palette back to the CSS spinner
 let root = document.documentElement;

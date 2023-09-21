@@ -1,7 +1,7 @@
 splt = 2
 w= 320//1600/splt
 h = 400//2000/splt
-marg = 5//30/splt
+marg = 50//30/splt
 
 let shade;
 function preload() {
@@ -68,6 +68,7 @@ dur = 100//ri(50, 100)
 expo = 1
 segs = Math.floor(dur/30)//ri(3, 6)
 segInc = Math.ceil(dur/segs)
+count = 1
 function draw() {
   
 
@@ -86,7 +87,10 @@ function draw() {
   }
 
   if(frameCount%segInc==0 && frameCount !== dur) {
+    
+
     newPattern()
+    count++
   }
   sinMod = 1//map(sin((frameCount*(freq))-45), -1, 1, 0.5, 1)
   cosMod = 1////map(cos((frameCount*(freq))-45), -1, 1, 0, 1)
@@ -157,14 +161,14 @@ if(frameCount == floor(dur) && finished == true && forever == false) {
   noLoop()
   newPattern()
   looping = false
-  dur += segInc
+  // dur += segInc
 }
 
-if(finished == true && forever == true && frameCount == dur) {
-  // newPattern()
-  looping = true
-  dur += segInc
-}
+// if(finished == true && forever == true && frameCount == dur) {
+//   // newPattern()
+//   looping = true
+//   dur += segInc
+// }
 
 
 
