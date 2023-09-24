@@ -62,7 +62,7 @@ function keyTyped() {
     
   }
   if (key === "p" || key === 'F') {
-    dur += 600
+    dur += 330
     loop()
   }
   if (key === "a" || key === 'A') {
@@ -75,7 +75,7 @@ function keyPressed() {
     if(looping == false) {
       loop()
       looping = true
-      dur += segInc 
+      dur = frameCount+segInc 
     } 
   }
 }
@@ -163,32 +163,17 @@ function gradLUT() {
   scl = 300
   thisCol = randColor()
   tiers = 1
-  maxCols = 2//truePal.length//truePal.length//constrain(randomInt(3, truePal.length-1), 3, 6)
+
   thisPal = []//[thisCol]
-  // thisPal.push(bgc)
-  // thisPal.push(bgc)
-  if(bgNum == 0) {
-    //bg is white
-    blendAmt = 0.1
-    blendBG = 0.2
-    blendFrame = 0.025
-  } else {
-    //bg is black
-    blendAmt = 0.1
-    blendBG = 0.01
-    blendFrame = 0.1
-  }
+
   blendAmt = 0
   blendBG = 0
   blendFrame = 0
-  thisPal.push(chroma.mix(bgc, underCol, blendBG).hex())
+  thisPal.push(bgc)
   for(let i =0; i < maxCols; i++) {
-    thisPal.push(chroma.mix(truePal[i], underCol, blendAmt).hex())
+    thisPal.push(truePal[i])
   }
-  // thisPal.push(chroma.mix(truePal[0], underCol, blendAmt).hex())
-  // thisPal.push(chroma.mix(truePal[1], underCol, blendAmt).hex())
-  // thisPal.push(chroma.mix(truePal[2], underCol, blendAmt).hex())
-  thisPal.push(chroma.mix(frameCol, underCol, blendFrame).hex())
+  thisPal.push(frameCol)
   for(let y = 0; y < h; y++) {
       
       
@@ -266,7 +251,7 @@ function mainPattern() {
   }
   //accents
   p.noStroke()
-  for(let i = 0; i < 200; i++) {
+  for(let i = 0; i < 400; i++) {
     p.fill(rv(0, 255))
     // p.strokeWeight(rv(0.5, 3))
     // p.strokeWeight(rv(0, 2))
@@ -278,7 +263,7 @@ function bTexture() {
   b.noFill()
   for(let i = 0; i < 10000; i++) {
     r= rv(w*0.15, w)
-    val = 255//rv(0, 255)
+    val = rv(0, 255)
     ang = (90*ri(0,1))+rv(-5, 5)
     here = createVector(rv(0, w), rv(0, h))
     length  = rv(w*0.1, w*0.2)

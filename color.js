@@ -35,7 +35,15 @@ bgColsB = ['white', 'black']
 
 //Background color parameters
 bgNum = ri(0, bgColsB.length-1);
-bgc = bgColsB[bgNum];
+if(fxrand() < 0.25) {
+  bgLum = 0.1
+  adj = -0.05
+} else {
+  bgLum = 0.9
+  adj = 0.05
+}
+
+bgc = chroma(rv(35, 45), rv(0.15, 0.2), bgLum+rv(0.00, adj), 'hsl').hex()//'#e6d4cc'//'#3f3f3f'//'black'//'#ECECEE'//bgCols[bgNum];
 bgName = bgNames[bgNum];
 
 //Make a color that always contrasts bgc
@@ -196,31 +204,181 @@ testD = [
   "#BEA36C"
 ]
 
-const pals = [shepard, source, soft, mcWoot, comboE, comboA, comboF, burn, retroBaby, wildberry];
+testE = [
+  "#018E0B",
+  "#DD2102",
+  "#01458A",
+  "#EAAD02",
+  "#DF8384",
+]
 
-const palNames = [
-  "Commander Shepard",
-  "Source",
-  "Soft",
-  "McWoot",
-  "Terra",
-  "Spice",
-  "Royal",
-  "Burn",
-  "Retro Baby",
-  "Wildberry"
-];
+testF = [
+  //rated for how the piece feels with just each one
+  // '#DFAD49',//honey yellow 6/10
+  "#506C43",//moss 7/10 a bit yellow
+  '#FB484A',//rich pink/red 10/10
+  '#DB6E23',//deep tangerine 7/10
+  '#0C5769',//dull teal 7/10 unique
+  '#768D6E',//light moss 7/10 soft and natural
+  '#1415FC',//ultramarine 9/10 so rich
+  '#526AA6',//cornflower blue, 9/10 soft and shifted purple
+  '#FB0264',//rich magenta 9/10 strong
+  '#86D8BE',//bright mint 7/10 minty
+  '#F2AC55',//honey 8/10
+  '#C95424',//rust orange 10/10
+  '#ABB5F5',//light cornflower 6/10 strange against canvas color
+  // '#14A896',//scrubs color 6/10 feels like scrubs
+  // '#718CBB',//a bit flat 6/10
+  '#D76C68',//salmon 8/10
+  "#018E0B",//lime 6/10
+  '#CFEC37',//limon 6/10 unique but eh
+  "#6EA565",//tennis green 7/10
+  '#E92A40',//pinkshift 9/10
+  '#096048',//pearl opal green 8/10
+  '#061C79',//deep ultramarine 10/10
+  '#FD7F1C',//tangerine 7/10
+  '#038A55',//primary green
+]
 
-//Palette parameters
-palNum = ri(0, pals.length-1);
-pal = allCols//pals[palNum];
-palName = palNames[palNum];
+tennisGreen = {
+  //tennis green 7/10
+  name: 'Tennis Green',
+  hex: "#16765A",
+}
+richPinkRed = {
+  // 10/10
+  name: 'Tart Pink-Orange',
+  hex: '#FB484A',
+}
+deepTangerine = {
+  // 8/10 solid
+  name: 'Deep Tangerine',
+  hex: '#DB6E23',
+}
+dullTeal = {
+  // 7/10 unique
+  name: 'Dull Teal',
+  hex: '#0C5769',
+}
+lightMoss = {
+  //7/10 soft inoffensive
+  name: 'Light Moss',
+  hex: '#768D6E',
+}
+ultramarine = {
+  //
+  name: 'Ultramarine',
+  hex: '#1415FC',
+}
+magenta = {
+  //
+  name: 'Magenta',
+  hex: '#FB0264',
+}
+brightMint = {
+  //
+  name: 'Bright Mint',
+  hex: '#86D8BE',
+}
+honey = {
+  //
+  name: 'Honey',
+  hex: '#F2AC55',
+}
+rustOrange = {
+  //
+  name: 'Rust Orange',
+  hex: '#C95424',
+}
+salmon = {
+  //
+  name: 'Salmon',
+  hex: '#D76C68',
+}
+opalGreen = {
+  //
+  name: 'Opal Green',
+  hex: '#096048',
+}
+pinkShift = {
+  //
+  name: 'Pinkshift',
+  hex: '#E92A40',
+}
+deepUltramarine = {
+  //
+  name: 'Deep Ultramarine',
+  hex: '#061C79',
+}
+cornflower = {
+  //
+  name: 'Cornflower',
+  hex: "#557AFF",
+}
+crimson = {
+  //
+  name: 'Crimson',
+  hex: "#9a0603",
+}
+richLavender = {
+  //
+  name: 'Rich Lavender',
+  hex: '#BB76CF',
+}
+redOrange = {
+  //
+  name: 'Red-Orange',
+  hex: "#FF4D21",
+}
+bubblegumPink = {
+  //
+  name: 'Bubblegum Pink',
+  hex: "#ff70a6",
+}
+cyan = {
+  //
+  name: 'Cyan',
+  hex: "#3EBCE0",
+}
+blush = {
+  //
+  name: 'Blush',
+  hex: "#BB5468",
+}
 
-//Shuffle that full palette
-truePal = shuff(pal);
+allCols = [
+  richPinkRed,
+  tennisGreen,
+  deepTangerine,
+  dullTeal,
+  ultramarine,
+  lightMoss,
+  magenta,
+  brightMint,
+  honey,
+  rustOrange,
+  salmon,
+  opalGreen,
+  pinkShift,
+  deepUltramarine,
+  cornflower,
+  crimson,
+  richLavender,
+  redOrange,
+  bubblegumPink,
+  cyan,
+  blush,
+]
 
-underCol = chroma(truePal[0]).hsl()
-bgc = chroma(underCol[0], 0.1, 0.9, 'hsl').hex()
+
+
+
+
+truePal = []
+theColor = allCols[ri(0, allCols.length-1)]
+truePal[0] = theColor.hex//testF[20]
+
+
 
 //Make a color that always contrasts bgc
 calcBgLum = chroma(bgc).luminance();

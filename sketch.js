@@ -1,7 +1,7 @@
 splt = 2
 w= 320//1600/splt
 h = 400//2000/splt
-marg = 50//30/splt
+marg = 20//30/splt
 
 let shade;
 function preload() {
@@ -28,6 +28,21 @@ scrollY = 0
 finished = false
 looping = true
 forever = false
+
+if(fxrand() < 0.2) {
+  maxCols = 0
+} else {
+  maxCols = 1
+}
+// maxCols = ri(0, 1)
+if(maxCols == 0) {
+  mono = true
+} else {
+  mono = false
+}
+
+
+
 
 if(fxrand() < 0.5) {
   scrollX = plusOrMin(rv(0.00025, 0.00075))
@@ -90,10 +105,22 @@ function draw() {
     
 
     newPattern()
+    if(frameCount < 100) {
+      p.push()
+      p.noFill()
+      p.strokeWeight(2)
+      p.drawingContext.setLineDash([rv(10, 1000), rv(10, 1000), rv(10, 1000), rv(10, 1000), rv(10, 1000), rv(10, 1000)])
+      p.stroke(rv(0, 255))
+      p.rect(w/2, h/2, w, h)
+      p.pop()
+    }
+    
     count++
   }
   sinMod = 1//map(sin((frameCount*(freq))-45), -1, 1, 0.5, 1)
   cosMod = 1////map(cos((frameCount*(freq))-45), -1, 1, 0, 1)
+
+  
 
   //Post processing
    lastPass = false
@@ -134,6 +161,8 @@ function draw() {
     p.image(recur, 0, 0)
    }
 
+
+
    //final display pass
    lastPass = true
    shade.setUniform("lastPass", lastPass)
@@ -150,7 +179,7 @@ if(frameCount == floor(dur) && finished == false) {
   newPattern()
   fxpreview()
   finished = true
-  //  save('shifta'+fxhash)
+  //  save('shifta'+theColor.name+fxhash)
    setTimeout(()=> {
     // window.location.reload();
  }
