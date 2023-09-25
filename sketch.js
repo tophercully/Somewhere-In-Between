@@ -17,13 +17,11 @@ if(url.searchParams.has('size') == true) {
 pxSize = url.searchParams.get('size')
 
 //parameters
-numPasses = 1//500
-shadeSeed = rv(0, 10)
+numPasses = 1
+shadeSeed = rv(0, 100000000)
 
-displaceDens = 2//rv(2, 4)//the max size of each panel displacer, by h/x
+displaceDens = 2//the max size of each panel displacer, by h/x
 
-scrollX = 0
-scrollY = 0
 
 finished = false
 looping = true
@@ -34,43 +32,33 @@ if($fx.rand() < 0.2) {
 } else {
   maxCols = 1
 }
-// maxCols = ri(0, 1)
+
 if(maxCols == 0) {
-  mono = true
+  mode = 'Binary'
 } else {
-  mono = false
+  mode = 'Ternary'
 }
 
-
-
-
-if($fx.rand() < 0.5) {
-  scrollX = plusOrMin(rv(0.00025, 0.00075))
-} else {
-  scrollY = plusOrMin(rv(0.00025, 0.00075))
-}
 
 $fx.features({
   "param1": 0,
   "param2": 0,
 })
 
+if(pxSize == 1) {
+  totalW = 800
+  totalH = 1000
+} else if(pxSize == 2){
+  totalW = 1600
+  totalH = 2000
+} 
+
 function setup() {
-  createCanvas(w, h, WEBGL);
-  if(pxSize == 1) {
-    pixelDensity(1)
-  } else if (pxSize == 2) {
-    pixelDensity(2)
-  } else if (pxSize == 3) {
-    pixelDensity(3)
-  }
+  createCanvas(totalW, totalH);
   pixelDensity(4)
-  if($fx.isPreview == true) [
-    pixelDensity(3)
-  ]
   recur = createGraphics(w, h, WEBGL)
-  canv = createCanvas(1600, 2000)
-  p = createGraphics(w, h)
+  canv = createCanvas(totalW, totalH)
+  p = createGraphics(320, 400)
   c = createGraphics(w, h)
   b = createGraphics(w, h)
   g = createGraphics(w, h)
@@ -170,7 +158,7 @@ function draw() {
   shade.setUniform("p", p)
   recur.rect(0, 0, w, h)
   rectMode(CENTER)
-  image(recur, -800, -1000, 1600, 2000)
+  image(recur, 0, 0, totalW, totalH)
 
   //render preview
   if(frameCount == floor(dur)){

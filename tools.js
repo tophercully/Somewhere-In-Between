@@ -46,10 +46,6 @@ function keyTyped() {
     window.history.replaceState('', '', updateURLParameter(window.location.href, "size", "2"));
     window.location.reload();
   }
-  if (key === "3") {
-    window.history.replaceState('', '', updateURLParameter(window.location.href, "size", "3"));
-    window.location.reload();
-  }
   if (key === "f" || key === 'F') {
     if(forever == false) {
       forever = true
@@ -161,17 +157,13 @@ function average(array) {
 
 function gradLUT() {
   scl = 300
-  thisCol = randColor()
-  tiers = 1
-
-  thisPal = []//[thisCol]
-
+  thisPal = []
   blendAmt = 0
   blendBG = 0
   blendFrame = 0
   thisPal.push(bgc)
   for(let i =0; i < maxCols; i++) {
-    thisPal.push(truePal[i])
+    thisPal.push(theColor.hex)
   }
   thisPal.push(frameCol)
   for(let y = 0; y < h; y++) {
@@ -179,11 +171,8 @@ function gradLUT() {
       
       nY = map(y, 0, h, 0, 1)
       
-      colScale = chroma.scale(thisPal).padding(0.0).classes(thisPal.length)//.classes((maxCols+2)*5)
-      hueCol = colScale(nY).hex()
-      
-      
-      col = hueCol
+      colScale = chroma.scale(thisPal).classes(thisPal.length)
+      col = colScale(nY).hex()
       g.stroke(col)
       g.strokeWeight(2)
       g.line(0, y, w,y)
@@ -194,7 +183,6 @@ function newPattern() {
   c.rectMode(CENTER)
   rows = ri(4, 10)
   cols = ri(4, 10)
-  console.log(cols, rows)
   cellW = w/cols
   cellH = h/rows
   c.noStroke()
@@ -202,7 +190,6 @@ function newPattern() {
     for(let x = 0; x < cols; x++) {
       c.fill(rv(0, 255), rv(0, 255), rv(0, 255))
       c.push()
-      // c.translate(rv(-cellW/4, cellW/4), rv(-cellH/4, cellH/4))
       c.translate(rv(-cellW/2, cellW/2), rv(-cellH/2, cellH/2))
       c.rect(x*cellW+cellW/2, y*cellH+cellH/2, cellW, cellH)
       c.pop()
@@ -217,21 +204,9 @@ function newPattern() {
 
 function mainPattern() {
   p.rectMode(CENTER)
-  // cols = ri(2, 5)
-  // rows = ri(2, 5)
-  // p.noStroke()
-  // cellW = w/cols
-  // cellH = h/rows
-  // for(let y = 0; y < rows; y++) {
-  //   for(let x = 0; x < cols; x++) {
-  //     p.fill(rv(0, 255))
-  //     p.rect(x*cellW+cellW/2, y*cellH+cellH/2, cellW, cellH)
-  //   }
-  // }
   p.noStroke()
   p.stroke(255)
-  dens = ri(4, 20)//4, 20
-  console.log('dens '+dens)
+  dens = ri(4, 20)
   colArray = []
   center = createVector(rv(w*0.4, w*0.6), rv(h*0.4, h*0.6))
   for(let i = 0; i < dens; i++) { 
@@ -247,14 +222,11 @@ function mainPattern() {
     p.strokeWeight(rv(0, 2))
     
     p.rect(center.x, center.y, wid, hei)
-    // p.rect(rv(0,w),rv(0,w),rv(w/10, w/2), rv(w/10, w/2))
   }
   //accents
   p.noStroke()
   for(let i = 0; i < 400; i++) {
     p.fill(rv(0, 255))
-    // p.strokeWeight(rv(0.5, 3))
-    // p.strokeWeight(rv(0, 2))
     p.square(rv(0, w),rv(0,h), rv(0.5, 10))
   }
 }
@@ -275,8 +247,5 @@ function bTexture() {
 
     b.strokeWeight(rv(0.5, 5))
     b.point(rv(0, w), rv(0, h))
-    // b.strokeWeight(rv(0, 0.5))
-    // b.fill(chroma(val,val,val).alpha(0.002+rv(-0.0001, 0.0001)).hex())
-    // b.circle(rv(-r, w+r), rv(-r, h+r), r)
   }
 }
