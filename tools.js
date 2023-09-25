@@ -1,14 +1,14 @@
 function ri(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(fxrand() * (max - min + 1) + min); // The maximum is exclusive and the minimum is inclusive
+  return Math.floor($fx.rand() * (max - min + 1) + min); // The maximum is exclusive and the minimum is inclusive
 }
 function rv(min, max) {
-  return fxrand() * (max - min) + min;
+  return $fx.rand() * (max - min) + min;
 }
 
 function re(min, max, expo) {
-  return map_range(Math.pow(fxrand(), expo), 0, Math.pow(1, expo), min, max)
+  return map_range(Math.pow($fx.rand(), expo), 0, Math.pow(1, expo), min, max)
 }
 function map_range(value, low1, high1, low2, high2) {
   return low2 + ((high2 - low2) * (value - low1)) / (high1 - low1);
@@ -19,7 +19,7 @@ function shuff(array) {
     randomIndex;
 
   while (currentIndex != 0) {
-    randomIndex = Math.floor(fxrand() * currentIndex);
+    randomIndex = Math.floor($fx.rand() * currentIndex);
     currentIndex--;
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex],
@@ -140,7 +140,7 @@ function ptFromAng(xPosition, yPosition, ang, dis) {
 }
 
 function plusOrMin(x) {
-  chance = fxrand() 
+  chance = $fx.rand() 
   if(chance < 0.5) {
     mod = 1
   } else {

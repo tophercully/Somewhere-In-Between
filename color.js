@@ -35,7 +35,7 @@ bgColsB = ['white', 'black']
 
 //Background color parameters
 bgNum = ri(0, bgColsB.length-1);
-if(fxrand() < 0.25) {
+if($fx.rand() < 0.25) {
   bgLum = 0.1
   adj = -0.05
 } else {
