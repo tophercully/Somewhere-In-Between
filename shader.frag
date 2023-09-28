@@ -12,10 +12,6 @@ uniform sampler2D c;
 uniform sampler2D b;
 uniform vec2 u_resolution;
 uniform float seed;
-uniform float sinMod;
-uniform float cosMod;
-uniform float scrollX;
-uniform float scrollY;
 uniform vec3 bgc;
 uniform float marg;
 uniform float pxSize;
@@ -87,11 +83,7 @@ void main() {
   stB.y = 1.0 - stB.y;
   stDebug.y = 1.0 - stDebug.y;
 
-  //form noise
-  // st.xy += map(random(st.xy), 0.0, 1.0, -0.0005, 0.0005);
-  // float zoomInc = 0.0025;
-  // st.x = map(st.x, 0.0, 1.0, -zoomInc, 1.0+zoomInc);
-  // st.y = map(st.y, 0.0, 1.0, -(zoomInc*0.8), 1.0+(zoomInc*0.8));
+
   if(lastPass == true) {
     //shrink stB so there is margin
     stB.x = map(stB.x, 0.0, 1.0, -marg, 1.0+marg);
@@ -99,9 +91,6 @@ void main() {
   }
 
 
-  //scroll
-  // st.x+=scrollX;
-  // st.y+=scrollY;
 
 
   //pusha
@@ -109,7 +98,11 @@ void main() {
   float dis = 1.0/u_resolution.y;
   float angMax = 64.0;
   float ang = floor(map(sampC.r, 0.0, 1.0, 0.0, angMax))*(6.289/angMax);
-  float inc = floor(map(sampC.b, 0.0, 1.0, 0.0, 8.0)*sinMod);
+  float inc = 0.0;
+  if(st.x != 0.0 && st.x != 1.0 && st.y != 0.0 && st.y != 1.0) {
+    inc = floor(map(sampC.b, 0.0, 1.0, 0.0, 8.0));
+  } 
+  
   float angDecider = floor(sampC.r*5.0);
   if(angDecider == 0.0) {
     st.x += inc/u_resolution.x;
@@ -131,9 +124,7 @@ void main() {
   } else if(angDeciderB == 3.0) {
     st.y -= inc/u_resolution.y;
   }
-  // st.x+=cos(ang)*(inc/u_resolution.x);
-  // st.y+=sin(ang)*(inc/u_resolution.y);
-  
+
   //pull in our main textures
   vec4 texC = texture2D(c, st);
   vec4 texG = texture2D(g, st);
@@ -141,13 +132,6 @@ void main() {
   vec4 texB = texture2D(b, stDebug);
   vec4 texPStatic = texture2D(p, stDebug);
 
-  float startRot = seed;
-  float rotAmt = map((texP.r+texP.g+texP.b)/3.0, 0.0, 1.0, 0.0, startRot+(6.28319*4.0));
-  float sclAmt = 200.00;
-  
-  stPaper.xy *= rotate(rotAmt+startRot);
-  stPaper.xy *= 200.0;
-  
   //map luminance as a y value on our gradient
   vec2 lum = vec2(0.5, texP.r);
   vec2 lumB = vec2(0.5, texPStatic.r);
@@ -159,8 +143,6 @@ void main() {
   vec3 color = vec3(0.0);
   
   //only apply color on the last pass, keep image black and white for now
-  color = texP.rgb;
-  
   if(lastPass == false) {
     color = texP.rgb;
   } else {
@@ -168,68 +150,27 @@ void main() {
   }
   
   if(lastPass == true) {
-    // color = colVal.rgb;
-    
-    //Paper texture
-    stPaper.xy *= rotate(0.7853981633974483*2.0);
-    float damageThresh = noise(seed+stPaper.xy);
-    float damageDark = 1.0-damageThresh;
-    float accentNoise = noise(seed+stB.xy*500.0);
-    float oppAccentNoise = 1.0 - accentNoise;
-    //offset grid
-    float offsetDens = 1000.0;
-    float vSinB = sin(seed+st.y*offsetDens);
-    float hSinGuide = sin(seed+st.y*(offsetDens/2.0));
-    float hSinB = 0.0;
-    if(hSinGuide > 0.0) {
-      hSinB = sin(seed+st.x*(offsetDens));
-    } else {
-      hSinB = sin(seed+st.x*offsetDens)*-1.0;
-    }
-
-    float midPt = 0.6;
-    float expoInc = 0.04;
-    //brush texture
-    // if(damageThresh > midPt && damageThresh < midPt+0.08) {
-    //   color = adjustExposure(color, -expoInc*0.75);
-    // } else if(damageDark > midPt && damageDark < midPt+0.08) {
-    //   color = adjustExposure(color, expoInc);
-    // }
-    // color = adjustContrast(color, 0.2);
-    // texB.rgb = adjustContrast(texB.rgb, 1.0);
-    //color noise
-
     //Draw margin, use 0 and 1 since we shrunk stB
     if(stB.x <= 0.0 || stB.x >= 1.0 || stB.y <= 0.0 || stB.y >= 1.0) {
-      color = texture2D(g, vec2(0.5, 0.0)).rgb;//bgc;
+      color = bgc.rgb;
     }
-    // stPaper.x*=0.25;
-    // stPaper.y*=2.0;
-    // stPaper.y += st.x;
-    // color = adjustSaturation(color, map(texB.g*3.0, 0.0, 1.0, -0.1, 0.5));
+   
     color = adjustSaturation(color, 0.5);
-    // color = adjustContrast(color, -0.2);
+
     float noiseGray = random(stDebug.xy)*0.035;
     color += noiseGray;
     float expo = 1.0;
     float amt = 0.0;
     if(bgc.r < 0.5) {
       expo = 0.5;
-      amt = 0.01;
+      amt = 0.015;
     } else {
       expo = 0.5;
-      amt = 0.015;
+      amt = 0.02;
     }
-
-    
     color += map(pow(texB.r, expo), 0.0, pow(1.0, expo), -amt,amt);
-
-    // color += sin(texB.r*(6.289*3.0)+(texPStatic.r*10.0))*(-0.05);
-    
-
     
   }
-  // color = texB.rgb;//texP.rgb;
 
   gl_FragColor = vec4(color, 1.0);
 }

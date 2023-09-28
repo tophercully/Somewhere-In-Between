@@ -36,7 +36,7 @@ function setLineDash(list) {
 
 function keyTyped() {
   if (key === "s" || key === "S") {
-    save("shifta"+fxhash);
+    save("Somewhere In Between");
   }
   if (key === "1") {
     window.history.replaceState('', '', updateURLParameter(window.location.href, "size", "1"));
@@ -58,7 +58,7 @@ function keyTyped() {
     
   }
   if (key === "p" || key === 'F') {
-    dur += 330
+    dur += 300
     loop()
   }
   if (key === "a" || key === 'A') {
@@ -71,7 +71,8 @@ function keyPressed() {
     if(looping == false) {
       loop()
       looping = true
-      dur = frameCount+segInc 
+      dur += 30
+      newPattern()
     } 
   }
 }
