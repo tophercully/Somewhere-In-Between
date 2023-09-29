@@ -31,7 +31,7 @@ canvas {
   left: 0;
   right: 0;
 
-  filter: drop-shadow(0 0 1.5rem #252525);
+  filter: drop-shadow(0 0 0.5rem #252525);
 }
 
 :root {
